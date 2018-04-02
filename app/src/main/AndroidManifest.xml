@@ -20,10 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.PublishOrderActivity" />
         <activity android:name=".activity.AddNewOrderActivity" />
         <activity android:name=".activity.OrderDetailActivity" />
-        <activity android:name=".activity.MyOrderActivity"></activity>
+        <activity android:name=".NavigationActivity" />
+        <activity android:name=".AddTaskActivity" />
+        <activity android:name=".activity.MyOrdersActivity"></activity>
     </application>
 
 </manifest>

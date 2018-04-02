@@ -2,9 +2,10 @@ package cn.edu.nju.laoniao.oldbirdexpress.activity;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,46 +28,43 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.edu.nju.laoniao.oldbirdexpress.R;
+import cn.edu.nju.laoniao.oldbirdexpress.constant.Constant;
 import cn.edu.nju.laoniao.oldbirdexpress.model.Order;
+import cn.edu.nju.laoniao.oldbirdexpress.user.UserName;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PublishOrderActivity extends AppCompatActivity {
+import static android.content.ContentValues.TAG;
 
-    private static final String TAG = "PublishOrderActivity";
+public class PublishOrderFragment extends Fragment {
+    private View view;
 
     private RecyclerView recyclerView;
-
-    private Timer timer;
-
-    private final String url="http://172.21.18.201:8080/getNewOrders?user=b";
-
     private MyViewAdapter myViewAdapter;
-
+    private Timer timer;
+    private String url= Constant.urlbase+"getNewOrders?user="+ UserName.user;
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_publish_order_list);
-        recyclerView=findViewById(R.id.my_publish_order_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(PublishOrderActivity.this));
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.activity_publish_order_list,container,false);
+        recyclerView=view.findViewById(R.id.my_publish_order_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        myViewAdapter=new MyViewAdapter();
+        myViewAdapter=new PublishOrderFragment.MyViewAdapter();
         recyclerView.setAdapter(myViewAdapter);
-
         createTimerTask();
+        return view;
     }
 
     private void createTimerTask() {
         timer=new Timer();
-        TimerTask alermTask=new AlarmTask();
-        timer.schedule(alermTask,0,500);
+        TimerTask alermTask=new PublishOrderFragment.AlarmTask();
+        timer.schedule(alermTask,0,1000);
     }
-
-
-    public class AlarmTask extends TimerTask{
+    public class AlarmTask extends TimerTask {
 
         @Override
         public void run() {
@@ -97,10 +95,11 @@ public class PublishOrderActivity extends AppCompatActivity {
                         Gson gson=new Gson();
                         //通过JsonArray把对象从中提取到List集合中来
                         for (JsonElement jsonElement : jarray) {
-                            stus.add(gson.fromJson(jsonElement, Order.class));
+                            //TODO change
+                            stus.add(gson.fromJson(jsonElement,Order.class));
                         }
                         if (stus.size()!=myViewAdapter.getItemCount()){
-                            runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @RequiresApi(api = Build.VERSION_CODES.O)
                                 @Override
                                 public void run() {
@@ -121,7 +120,6 @@ public class PublishOrderActivity extends AppCompatActivity {
 
         }
     }
-
 
     private class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -149,7 +147,7 @@ public class PublishOrderActivity extends AppCompatActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(PublishOrderActivity.this,OrderDetailActivity.class);
+                    Intent intent=new Intent(view.getContext(),OrderDetailActivity.class);
                     startActivity(intent);
                 }
             });
@@ -159,7 +157,7 @@ public class PublishOrderActivity extends AppCompatActivity {
             list_item_user.setText(order.getUser());
             list_item_school.setText(order.getSchool());
             list_item_from.setText(order.getFromPlace());
-            list_item_time.setText(order.getFromTime().getHour()+":"+order.getFromTime().getMinute()+"-"+order.getToTime().getHour()+":"+order.getToTime().getMinute());
+            list_item_time.setText(order.getFromTime().getHour()+":"+order.getFromTime().getMinute()+"-"+(order.getToTime().getHour()+2)+":"+order.getToTime().getMinute());
             list_item_to.setText(order.getToPlace());
             list_item_createTime.setText((LocalDateTime.now().toEpochSecond(ZoneOffset.of("+8"))-order.getCreateTime().toEpochSecond(ZoneOffset.of("+8")))/(60*1000)+1+"分钟前");
             list_item_money.setText("赚"+order.getPrice()+"元");
@@ -167,14 +165,14 @@ public class PublishOrderActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private class MyViewAdapter extends RecyclerView.Adapter<ViewHolder>{
+    private class MyViewAdapter extends RecyclerView.Adapter<PublishOrderFragment.ViewHolder>{
 
         List<Order> orders=new ArrayList<>();
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(PublishOrderActivity.this);
+        public PublishOrderFragment.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(view.getContext());
 
-            return new ViewHolder(layoutInflater, parent);
+            return new PublishOrderFragment.ViewHolder(layoutInflater, parent);
         }
 
         public void setOrders(List<Order> list){
@@ -186,7 +184,7 @@ public class PublishOrderActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(PublishOrderFragment.ViewHolder holder, int position) {
             Order crime = orders.get(position);
             holder.bind(crime);
         }

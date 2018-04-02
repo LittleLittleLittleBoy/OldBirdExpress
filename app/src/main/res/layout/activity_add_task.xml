@@ -5,18 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.AddNewOrderActivity">
-    <Button
-        android:text="一键创建多个订单"
-        android:id="@+id/addButton"
+    tools:context=".AddTaskActivity">
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_order_list"
-        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_height="0dp">
-
-    </android.support.v7.widget.RecyclerView>
+        android:src="@drawable/publish_task"/>
+    <Button
+        android:id="@+id/create_new_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="创建新的订单"/>
 
 </LinearLayout>

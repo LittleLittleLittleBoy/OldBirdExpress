@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -26,82 +25,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.edu.nju.laoniao.oldbirdexpress.R;
+import cn.edu.nju.laoniao.oldbirdexpress.constant.Constant;
 import cn.edu.nju.laoniao.oldbirdexpress.model.Order;
+import cn.edu.nju.laoniao.oldbirdexpress.user.UserName;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AddNewOrderActivity extends AppCompatActivity {
-    private static final String TAG = "AddNewOrderActivity";
+public class MyOrdersActivity extends AppCompatActivity {
 
-    private static final String url="http:10.0.2.2:8080/addNewOrder?user=a";
-    private static final String url1="http:10.0.2.2:8080/getMyOrders?user=a";
+    private static final String url= Constant.urlbase+"getMyOrders?user="+ UserName.user;
 
-    private Button addButton;
+    private static final String TAG = "MyOrdersActivity";
+
     private RecyclerView recyclerView;
-    private AddNewOrderActivity.MyViewAdapter myViewAdapter;
+    private MyOrdersActivity.MyViewAdapter myViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_order);
+        setContentView(R.layout.activity_my_orders);
 
-        addButton=findViewById(R.id.addButton);
         recyclerView=findViewById(R.id.my_order_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(AddNewOrderActivity.this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(MyOrdersActivity.this));
 
-        myViewAdapter=new AddNewOrderActivity.MyViewAdapter();
+        myViewAdapter=new MyOrdersActivity.MyViewAdapter();
         recyclerView.setAdapter(myViewAdapter);
-
-        init();
-
-
-    }
-
-    private void init() {
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request
-                        .Builder()
-                        .get()
-                        .url(url)
-                        .build();
-                okHttpClient.newCall(request).enqueue(new Callback() {
-
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) {
-                        try {
-                            String result=response.body().string();
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-
-                });
-                getMyOrders();
-            }
-        });
         getMyOrders();
     }
-
     private void getMyOrders() {
         OkHttpClient okHttpClient1 = new OkHttpClient();
 
         Request request1 = new Request
                 .Builder()
                 .get()
-                .url(url1)
+                .url(url)
                 .build();
         okHttpClient1.newCall(request1).enqueue(new Callback() {
 
@@ -172,11 +132,12 @@ public class AddNewOrderActivity extends AppCompatActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(AddNewOrderActivity.this,OrderDetailActivity.class);
+                    Intent intent=new Intent(MyOrdersActivity.this,OrderDetailActivity.class);
                     startActivity(intent);
                 }
             });
         }
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public void bind(Order order){
             morder=order;
             list_item_user.setText(order.getUser());
@@ -190,14 +151,14 @@ public class AddNewOrderActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private class MyViewAdapter extends RecyclerView.Adapter<AddNewOrderActivity.ViewHolder>{
+    private class MyViewAdapter extends RecyclerView.Adapter<MyOrdersActivity.ViewHolder>{
 
         List<Order> orders=new ArrayList<>();
         @Override
-        public AddNewOrderActivity.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(AddNewOrderActivity.this);
+        public MyOrdersActivity.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(MyOrdersActivity.this);
 
-            return new AddNewOrderActivity.ViewHolder(layoutInflater, parent);
+            return new MyOrdersActivity.ViewHolder(layoutInflater, parent);
         }
 
         public void setOrders(List<Order> list){
@@ -209,7 +170,7 @@ public class AddNewOrderActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(AddNewOrderActivity.ViewHolder holder, int position) {
+        public void onBindViewHolder(MyOrdersActivity.ViewHolder holder, int position) {
             Order crime = orders.get(position);
             holder.bind(crime);
         }

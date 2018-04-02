@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import cn.edu.nju.laoniao.oldbirdexpress.NavigationActivity;
 import cn.edu.nju.laoniao.oldbirdexpress.R;
+import cn.edu.nju.laoniao.oldbirdexpress.user.UserName;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,14 +25,16 @@ public class LoginActivity extends AppCompatActivity {
         buttona.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(LoginActivity.this,AddNewOrderActivity.class);
+                Intent intent=new Intent(LoginActivity.this,NavigationActivity.class);
+                UserName.user="a";
                 startActivity(intent);
             }
         });
         buttonb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(LoginActivity.this,PublishOrderActivity.class);
+                Intent intent=new Intent(LoginActivity.this,NavigationActivity.class);
+                UserName.user="b";
                 startActivity(intent);
             }
         });

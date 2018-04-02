@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MyOrderActivity">
-
+    tools:context=".activity.MyOrdersActivity">
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_publish_order_list"
+        android:id="@+id/my_order_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     </android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>
