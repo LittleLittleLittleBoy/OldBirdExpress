@@ -64,6 +64,21 @@ public class PublishOrderFragment extends Fragment {
         TimerTask alermTask=new PublishOrderFragment.AlarmTask();
         timer.schedule(alermTask,0,1000);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timer=new Timer();
+        TimerTask alermTask=new PublishOrderFragment.AlarmTask();
+        timer.schedule(alermTask,0,1000);
+    }
+
     public class AlarmTask extends TimerTask {
 
         @Override
